@@ -1,0 +1,313 @@
+{
+  "crypto": {
+    "sha256_abc": true,
+    "hmac_rfc4231_1": true,
+    "pass": true
+  },
+  "rke_replay": {
+    "trials": 1000,
+    "legit_accepted": 1000,
+    "replays_accepted": 0,
+    "pass": true
+  },
+  "rke_relay": {
+    "trials": 1000,
+    "relayed_accepted": 1000,
+    "pass": true
+  },
+  "rke_rolljam": {
+    "trials": 1000,
+    "unlocked": 1000,
+    "pass": true
+  },
+  "mac_forgery": {
+    "weak_keyless": {
+      "attempts_to_forge": 1,
+      "forged": true
+    },
+    "hmac_keyed": {
+      "guesses": 500000,
+      "forged_count": 0,
+      "expected_attempts_5050": 2147483648
+    },
+    "pass": true
+  },
+  "can_injection": {
+    "secoc_on": {
+      "moved_m": 0,
+      "speed_kph": 0,
+      "gear": "P"
+    },
+    "secoc_off": {
+      "moved_m": 8.05,
+      "speed_kph": 27.5,
+      "gear": "D"
+    },
+    "pass": true
+  },
+  "can_replay": {
+    "first_accepted": true,
+    "replays": 100,
+    "replays_accepted": 0,
+    "pass": true
+  },
+  "telematics": {
+    "owner_forwarded": true,
+    "attacker_blocked": true,
+    "blocked_count": 1,
+    "pass": true
+  },
+  "distance_bounding": {
+    "trials_per_sigma": 300000,
+    "false_reject_budget_pct": 0.1,
+    "attacker_distance_m": 15,
+    "relay_latency_ns": 20,
+    "legit_distance_m": [
+      0.3,
+      2
+    ],
+    "rows": [
+      {
+        "sigma_ns": 0.7,
+        "ranging_accuracy_m": 0.1,
+        "best_tau_ns": 14.6,
+        "relay_success_pct": 0,
+        "honest_false_reject_pct": 0.1
+      },
+      {
+        "sigma_ns": 2,
+        "ranging_accuracy_m": 0.3,
+        "best_tau_ns": 17.7,
+        "relay_success_pct": 0,
+        "honest_false_reject_pct": 0.1
+      },
+      {
+        "sigma_ns": 5,
+        "ranging_accuracy_m": 0.75,
+        "best_tau_ns": 25.8,
+        "relay_success_pct": 0,
+        "honest_false_reject_pct": 0.1
+      },
+      {
+        "sigma_ns": 15,
+        "ranging_accuracy_m": 2.25,
+        "best_tau_ns": 55.2,
+        "relay_success_pct": 0,
+        "honest_false_reject_pct": 0.1
+      },
+      {
+        "sigma_ns": 30,
+        "ranging_accuracy_m": 4.5,
+        "best_tau_ns": 100.3,
+        "relay_success_pct": 25.55,
+        "honest_false_reject_pct": 0.1
+      },
+      {
+        "sigma_ns": 60,
+        "ranging_accuracy_m": 8.99,
+        "best_tau_ns": 192.7,
+        "relay_success_pct": 88.64,
+        "honest_false_reject_pct": 0.1
+      }
+    ],
+    "pass": true
+  },
+  "counter_window": {
+    "trials": 300000,
+    "lambdas": [
+      0.5,
+      1,
+      2,
+      4
+    ],
+    "by_lambda": [
+      {
+        "lambda": 0.5,
+        "rows": [
+          {
+            "window": 1,
+            "lockout_pct": 39.35,
+            "capture_replay_pct": 34.59
+          },
+          {
+            "window": 2,
+            "lockout_pct": 9.01,
+            "capture_replay_pct": 38.83
+          },
+          {
+            "window": 4,
+            "lockout_pct": 0.17,
+            "capture_replay_pct": 39.34
+          },
+          {
+            "window": 8,
+            "lockout_pct": 0,
+            "capture_replay_pct": 39.35
+          },
+          {
+            "window": 16,
+            "lockout_pct": 0,
+            "capture_replay_pct": 39.35
+          },
+          {
+            "window": 32,
+            "lockout_pct": 0,
+            "capture_replay_pct": 39.35
+          },
+          {
+            "window": 64,
+            "lockout_pct": 0,
+            "capture_replay_pct": 39.35
+          },
+          {
+            "window": 256,
+            "lockout_pct": 0,
+            "capture_replay_pct": 39.35
+          }
+        ]
+      },
+      {
+        "lambda": 1,
+        "rows": [
+          {
+            "window": 1,
+            "lockout_pct": 63.1,
+            "capture_replay_pct": 48.33
+          },
+          {
+            "window": 2,
+            "lockout_pct": 26.43,
+            "capture_replay_pct": 60.07
+          },
+          {
+            "window": 4,
+            "lockout_pct": 1.85,
+            "capture_replay_pct": 63.01
+          },
+          {
+            "window": 8,
+            "lockout_pct": 0,
+            "capture_replay_pct": 63.1
+          },
+          {
+            "window": 16,
+            "lockout_pct": 0,
+            "capture_replay_pct": 63.1
+          },
+          {
+            "window": 32,
+            "lockout_pct": 0,
+            "capture_replay_pct": 63.1
+          },
+          {
+            "window": 64,
+            "lockout_pct": 0,
+            "capture_replay_pct": 63.1
+          },
+          {
+            "window": 256,
+            "lockout_pct": 0,
+            "capture_replay_pct": 63.1
+          }
+        ]
+      },
+      {
+        "lambda": 2,
+        "rows": [
+          {
+            "window": 1,
+            "lockout_pct": 86.5,
+            "capture_replay_pct": 49.77
+          },
+          {
+            "window": 2,
+            "lockout_pct": 59.47,
+            "capture_replay_pct": 72.7
+          },
+          {
+            "window": 4,
+            "lockout_pct": 14.23,
+            "capture_replay_pct": 85.17
+          },
+          {
+            "window": 8,
+            "lockout_pct": 0.1,
+            "capture_replay_pct": 86.49
+          },
+          {
+            "window": 16,
+            "lockout_pct": 0,
+            "capture_replay_pct": 86.5
+          },
+          {
+            "window": 32,
+            "lockout_pct": 0,
+            "capture_replay_pct": 86.5
+          },
+          {
+            "window": 64,
+            "lockout_pct": 0,
+            "capture_replay_pct": 86.5
+          },
+          {
+            "window": 256,
+            "lockout_pct": 0,
+            "capture_replay_pct": 86.5
+          }
+        ]
+      },
+      {
+        "lambda": 4,
+        "rows": [
+          {
+            "window": 1,
+            "lockout_pct": 98.17,
+            "capture_replay_pct": 32.36
+          },
+          {
+            "window": 2,
+            "lockout_pct": 90.91,
+            "capture_replay_pct": 57.49
+          },
+          {
+            "window": 4,
+            "lockout_pct": 56.62,
+            "capture_replay_pct": 86.36
+          },
+          {
+            "window": 8,
+            "lockout_pct": 5.18,
+            "capture_replay_pct": 97.84
+          },
+          {
+            "window": 16,
+            "lockout_pct": 0,
+            "capture_replay_pct": 98.17
+          },
+          {
+            "window": 32,
+            "lockout_pct": 0,
+            "capture_replay_pct": 98.17
+          },
+          {
+            "window": 64,
+            "lockout_pct": 0,
+            "capture_replay_pct": 98.17
+          },
+          {
+            "window": 256,
+            "lockout_pct": 0,
+            "capture_replay_pct": 98.17
+          }
+        ]
+      }
+    ],
+    "note": "B = out-of-range presses ~ Poisson(λ); attacker sniffs one unused code at random offset K∈1..B",
+    "pass": true
+  },
+  "meta": {
+    "generatedAt": "2026-09-23T16:53:27.867Z",
+    "node": "v24.19.0",
+    "allOk": true
+  }
+}

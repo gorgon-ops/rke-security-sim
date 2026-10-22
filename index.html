@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RKE Rig — Remote Start & Drive Simulator</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1>RKE&nbsp;RIG</h1>
+    <span class="tag">Remote Keyless Entry · CAN · Drive-by-wire</span>
+    <span class="sim">SIMULATION ONLY — not connected to any real vehicle</span>
+  </header>
+
+  <div id="body">
+    <canvas id="view"></canvas>
+
+    <aside id="panel">
+      <div class="hud">
+        <div class="cell"><div class="lbl">Speed</div><div class="val" id="spd">0</div></div>
+        <div class="cell"><div class="lbl">RPM</div><div class="val" id="rpm">0</div></div>
+        <div class="cell"><div class="lbl">Gear</div><div class="val" id="gear">P</div></div>
+        <div class="cell"><div class="lbl">Engine</div><div class="val bad" id="eng">OFF</div></div>
+        <div class="cell"><div class="lbl">Doors</div><div class="val bad" id="door">LOCKED</div></div>
+        <div class="cell"><div class="lbl">Steer</div><div class="val" id="str">0°</div></div>
+      </div>
+
+      <div class="grp">
+        <div class="h"><span class="n">1</span> Get in — Keyless Entry (RF)</div>
+        <div class="body">
+          <button id="fobUnlock">Fob&nbsp;Unlock</button>
+          <button id="fobLock">Fob&nbsp;Lock</button>
+          <button id="relay" class="danger">Relay&nbsp;Live</button>
+          <button id="replay" class="danger">Replay&nbsp;Last</button>
+        </div>
+        <div class="hint">Relay forwards a live code (works). Replay resends an old one (rolling code blocks it). Turn on the jammer, press the fob twice, then Replay = RollJam.</div>
+        <div class="body"><label class="tog"><span>RF jammer (attacker)</span><input type="checkbox" id="jammer"></label></div>
+        <div class="body"><label class="tog sec"><span>Distance bounding (anti-relay)</span><input type="checkbox" id="db"></label></div>
+        <div class="body" style="align-items:center">
+          <span style="font-size:11px;color:var(--dim)">τ&nbsp;<b id="tauval">100</b>&nbsp;ns → <span id="taudist">15.0</span>&nbsp;m ceiling</span>
+          <input type="range" id="tau" min="25" max="500" step="5" value="100" style="flex:1;min-width:120px">
+        </div>
+        <div class="hint">Turn distance bounding ON and Relay dies: the wormhole's round-trip time exceeds τ. Tighten τ and the ceiling shrinks — see the measured τ-sweep in <code>evidence/RESULTS.md</code>.</div>
+      </div>
+
+      <div class="grp">
+        <div class="h"><span class="n">2</span> Wake it — Telematics (cellular)</div>
+        <div class="body">
+          <button id="telUnlock">Owner&nbsp;Unlock</button>
+          <button id="telStart">Owner&nbsp;Start</button>
+          <button id="attackTel" class="danger">Attacker&nbsp;Start</button>
+        </div>
+        <div class="hint">Owner app carries the token; attacker guesses it. Gateway auth (below) decides who gets through.</div>
+      </div>
+
+      <div class="grp">
+        <div class="h"><span class="n">3</span> Ignition &amp; gear</div>
+        <div class="body">
+          <button id="startEng">Start&nbsp;Engine</button>
+          <button id="stopEng">Stop</button>
+        </div>
+        <div class="body gears">
+          <button data-gear="0" class="on">P</button>
+          <button data-gear="1">R</button>
+          <button data-gear="2">N</button>
+          <button data-gear="3">D</button>
+        </div>
+        <div class="hint">Put it in D, then drive with <b>W/A/S/D</b> or arrow keys.</div>
+      </div>
+
+      <div class="grp">
+        <div class="h"><span class="n">4</span> Security posture</div>
+        <div class="body">
+          <label class="tog sec"><span>Gateway requires auth</span><input type="checkbox" id="auth" checked></label>
+          <label class="tog sec"><span>SecOC: ECUs verify MAC + freshness</span><input type="checkbox" id="secoc" checked></label>
+          <label class="tog sec"><span>Attacker: inject DRIVE_CMD on bus</span><input type="checkbox" id="inject"></label>
+        </div>
+        <div class="hint">Injected frames are unsigned, so with SecOC ON the ECUs reject them (HMAC + freshness). Turn SecOC OFF and the same injection drives the car — a flat, unauthenticated bus obeys anyone on it.</div>
+      </div>
+
+      <div class="grp">
+        <div class="body">
+          <label class="tog"><span>Chase camera</span><input type="checkbox" id="follow" checked></label>
+          <button id="reset">Reset&nbsp;position</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <div id="monitor">
+    <div>
+      <div class="mh">CAN bus — live signals</div>
+      <div class="scroll"><table><tbody id="canbody"></tbody></table></div>
+    </div>
+    <div>
+      <div class="mh">Raw traffic</div>
+      <div class="scroll"><pre id="rawlog"></pre></div>
+    </div>
+    <div>
+      <div class="mh">Event log</div>
+      <div class="scroll"><div id="evlog"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Three.js as classic (non-module) scripts so this page runs straight off
+     the filesystem — ES-module imports are blocked over file:// in Chrome. -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+<script src="js/crypto.js"></script>
+<script src="js/distancebound.js"></script>
+<script src="js/core.js"></script>
+<script src="js/can.js"></script>
+<script src="js/ecu.js"></script>
+<script src="js/rke.js"></script>
+<script src="js/telematics.js"></script>
+<script src="js/vehicle.js"></script>
+<script src="js/scene.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
